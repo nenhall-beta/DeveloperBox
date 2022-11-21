@@ -65,6 +65,8 @@ class AppState: ObservableObject {
         }
     }
     @Published var needMakeDMG: Bool = false
+    @Published var notaryCode = ""
+    
     let queue = DispatchQueue(label: "com.meitu.devbox.process")
     
     init() {
