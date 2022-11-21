@@ -14,15 +14,36 @@ struct NotaryView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                TextField("请选择DMG模版文件路径", text: $appState.templatePath)
+                Text("应用专用密码:")
+                TextField(appState.appSpecialKey, text: $appState.appSpecialKey)
+                    .multilineTextAlignment(.leading)
+                    .cornerRadius(8)
+            }
+            
+            HStack {
+                Text("Apple ID:")
+                TextField(appState.appleID, text: $appState.appleID)
+                    .multilineTextAlignment(.leading)
+                    .cornerRadius(8)
+            }
+            
+            HStack {
+                Text("Team ID:")
+                TextField(appState.teamID, text: $appState.teamID)
+                    .multilineTextAlignment(.leading)
+                    .cornerRadius(8)
+            }
+            
+            HStack {
+                TextField("选择应用程序压缩文件", text: $appState.templatePath)
                     .multilineTextAlignment(.leading)
                     .cornerRadius(8)
                 Button {
-                    if let url = Panel.showOpen(fileTypes: ["dmgCanvas"])?.first {
-                        appState.templatePath = url.path
+                    if let url = Panel.showOpen(fileTypes: ["zip", "dmg"])?.first {
+                        appState.notrayFilePath = url.path
                     }
                 } label: {
-                    Text("输入文件")
+                    Text("选择")
                         .bold()
                 }
             }
@@ -38,19 +59,23 @@ struct NotaryView: View {
                     Text("复制")
                         .bold()
                 }
+                Spacer()
+                Toggle("把以上信息保存到钥匙串", isOn: $appState.saveKey)
             }
-            
-            TextEditor(text: .constant(appState.outputLogString))
-                .lineSpacing(5)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.gray, lineWidth: 1)
-                )
-                .font(.system(size: 12))
-                .foregroundColor(.primary)
-            if appState.outputLogString.isEmpty {
-                Text("操作日志...")
-                    .padding(10)
+
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: .constant(appState.outputLogString))
+                    .lineSpacing(5)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
+                    .font(.system(size: 12))
+                    .foregroundColor(.primary)
+                if appState.outputLogString.isEmpty {
+                    Text("操作日志...")
+                        .padding(10)
+                }
             }
         }
         .padding(20)

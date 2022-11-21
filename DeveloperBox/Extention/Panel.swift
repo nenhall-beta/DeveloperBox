@@ -27,7 +27,7 @@ struct Panel {
         panel.isExtensionHidden = false
         panel.allowsOtherFileTypes = false
         panel.canChooseDirectories = true
-        panel.allowsMultipleSelection = true
+        panel.allowsMultipleSelection = multipleSelection
         if let title = title {
             panel.title = title
         }

@@ -10,7 +10,7 @@ import SwiftUI
 enum NavigationItem: String {
     case codesign
     case makeDMG
-    case notary
+    case notarizate
     case resetApp
 }
 
@@ -22,7 +22,7 @@ struct SidebarView: View {
     var body: some View {
         VStack {
             List {
-                NavigationLink (tag: NavigationItem.codesign, selection: $appState.selection) {
+                NavigationLink(tag: NavigationItem.codesign, selection: $appState.selection) {
                     CodesignView()
                         .environmentObject(appState)
                 } label: {
@@ -34,7 +34,7 @@ struct SidebarView: View {
                     .padding(10)
                 }
                 
-                NavigationLink (tag: NavigationItem.makeDMG, selection: $appState.selection) {
+                NavigationLink(tag: NavigationItem.makeDMG, selection: $appState.selection) {
                     MakeDMGView()
                         .environmentObject(appState)
                 } label: {
@@ -46,19 +46,19 @@ struct SidebarView: View {
                     .padding(10)
                 }
                 
-                NavigationLink (tag: NavigationItem.notary, selection: $appState.selection) {
+                NavigationLink(tag: NavigationItem.notarizate, selection: $appState.selection) {
                     NotaryView()
                         .environmentObject(appState)
                 } label: {
                     HStack {
                         Image(systemName: "lock.shield")
                             .font(.title)
-                        Text(NavigationItem.notary.rawValue)
+                        Text(NavigationItem.notarizate.rawValue)
                     }
                     .padding(10)
                 }
                 
-                NavigationLink (tag: NavigationItem.resetApp, selection: $appState.selection) {
+                NavigationLink(tag: NavigationItem.resetApp, selection: $appState.selection) {
                     CleanCache()
                         .environmentObject(appState)
                 } label: {

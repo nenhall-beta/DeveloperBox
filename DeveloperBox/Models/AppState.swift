@@ -51,7 +51,7 @@ class AppState: ObservableObject {
             outputLogString = ""
         }
     }
-    @Published var selection: NavigationItem? = .codesign {
+    @Published var selection: NavigationItem? = .notarizate {
         didSet {
             guard let selection = selection else { return }
             outputLogString = loginfo[selection.rawValue] ?? ""
@@ -66,6 +66,12 @@ class AppState: ObservableObject {
     }
     @Published var needMakeDMG: Bool = false
     @Published var notaryCode = ""
+    @Published var notrayFilePath = ""
+    @AppStorage("appleID") var appleID = ""
+    @AppStorage("teamID") var teamID = ""
+    @AppStorage("appPassword") var appSpecialKey = ""
+    @AppStorage("saveKey") var saveKey = false
+    @AppStorage("webhook") var webhook = ""
     
     let queue = DispatchQueue(label: "com.meitu.devbox.process")
     
@@ -85,8 +91,19 @@ class AppState: ObservableObject {
             runCreateDMG(at: inputPath)
         case .resetApp:
             runClear()
-        case .notary:
-            break
+        case .notarizate:
+            runNotarizate()
+        }
+    }
+    
+    func runNotarizate() {
+        if saveKey {
+            Notarizate.saveKeyToKeychain(teamID: teamID, appleID: appleID, appKey: appSpecialKey)
+        }
+        
+        notaryCode = Notarizate.uploadFile(notrayFilePath, teamID: teamID, appleID: appleID, appKey: appSpecialKey)
+        if !notaryCode.isEmpty {
+            Notarizate.injectCode(appPath: inputPath)
         }
     }
     
