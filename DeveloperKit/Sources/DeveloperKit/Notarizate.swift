@@ -7,11 +7,12 @@
 
 import Foundation
 
+/// 专用密钥： https://support.apple.com/en-us/HT204397
 public struct Notarizate {
     
     private static let keychainName = "App Notay Key"
     
-    public static func uploadFile(_ path: String, teamID: String, appleID: String, appKey: String, webhook: String = "") -> String {
+    public static func uploadFile(_ path: String, teamID: String, appleID: String, appKey: String, webhook: String = "", callHandle: @escaping (_ notaryCode: String?) ->()) {
         
         saveKeyToKeychain(teamID: teamID, appleID: appleID, appKey: appKey)
         
@@ -24,10 +25,8 @@ public struct Notarizate {
         ]
         
         DeveloperKit.runProcess(from: "/usr/bin/xcrun", arguments: arguments) { info, error, exited, result in
-            
+            callHandle(info)
         }
-        
-        return ""
     }
     
     public static func saveKeyToKeychain(teamID: String, appleID: String, appKey: String, keyName: String = "") {
@@ -55,7 +54,5 @@ public struct Notarizate {
         DeveloperKit.runProcess(from: "/usr/bin/xcrun", arguments: arguments) { info, error, exited, result in
             
         }
-        // xcrun stapler staple "/Users/meitu/Desktop/AirBrush Studio.app"
-        
     }
 }

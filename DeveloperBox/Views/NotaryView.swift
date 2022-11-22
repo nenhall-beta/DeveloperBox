@@ -35,7 +35,7 @@ struct NotaryView: View {
             }
             
             HStack {
-                TextField("选择应用程序压缩文件", text: $appState.templatePath)
+                TextField("选择要公证的应用程序压缩文件", text: $appState.notrayFilePath)
                     .multilineTextAlignment(.leading)
                     .cornerRadius(8)
                 Button {

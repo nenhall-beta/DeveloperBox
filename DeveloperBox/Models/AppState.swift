@@ -68,7 +68,7 @@ class AppState: ObservableObject {
     @Published var notaryCode = ""
     @Published var notrayFilePath = ""
     @AppStorage("appleID") var appleID = ""
-    @AppStorage("teamID") var teamID = ""
+    @AppStorage("teamID") var teamID = "5V292QZ538"
     @AppStorage("appPassword") var appSpecialKey = ""
     @AppStorage("saveKey") var saveKey = false
     @AppStorage("webhook") var webhook = ""
@@ -97,14 +97,21 @@ class AppState: ObservableObject {
     }
     
     func runNotarizate() {
-        if saveKey {
-            Notarizate.saveKeyToKeychain(teamID: teamID, appleID: appleID, appKey: appSpecialKey)
-        }
+        updateLog("开始公证")
         
-        notaryCode = Notarizate.uploadFile(notrayFilePath, teamID: teamID, appleID: appleID, appKey: appSpecialKey)
-        if !notaryCode.isEmpty {
-            Notarizate.injectCode(appPath: inputPath)
+        do {
+            try URL(fileURLWithPath: "/Users/meitu/Desktop/Fruta.app").zip(dest: URL(fileURLWithPath: "/Users/meitu/Desktop/Fruta2.zip"))
+        } catch {
+            Log.error(error.localizedDescription)
         }
+        Notarizate.uploadFile(notrayFilePath, teamID: teamID, appleID: appleID, appKey: appSpecialKey, callHandle: { notaryCode in
+            guard let notaryCode = notaryCode else { return }
+            if !notaryCode.isEmpty {
+                self.notaryCode = notaryCode
+                self.updateLog(notaryCode)
+//                Notarizate.injectCode(appPath: self.inputPath)
+            }
+        })
     }
     
     func runCodesign() {
