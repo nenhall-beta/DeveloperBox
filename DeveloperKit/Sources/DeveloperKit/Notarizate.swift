@@ -42,7 +42,6 @@ public struct Notarizate {
         DeveloperKit.runProcess(from: "/usr/bin/xcrun", arguments: arguments) { info, error, exited, result in
             
         }
-        // xcrun notarytool store-credentials "Developer ID2" --apple-id "nenghao.wu@pixocial.com" --team-id "5V292QZ538" --password "tnlm-paco-xhot-pudk"
     }
     
     public static func injectCode(appPath: String) {
