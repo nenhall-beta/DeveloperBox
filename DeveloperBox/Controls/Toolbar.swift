@@ -10,6 +10,7 @@ import SwiftUI
 struct Toolbar: CustomizableToolbarContent {
     @Binding var processing: Bool
     @Binding var clean: Bool
+    @Binding var setting: Bool
 
     var body: some CustomizableToolbarContent {
         ToolbarItem(id: "toggleSidebar", placement: .navigation, showsByDefault: true) {
@@ -26,6 +27,14 @@ struct Toolbar: CustomizableToolbarContent {
                 clean.toggle()
             } label: {
                 Image(systemName: "paintbrush.fill")
+            }
+        }
+        
+        ToolbarItem(id: "Setting", placement: .primaryAction, showsByDefault: true) {
+            Button {
+                setting.toggle()
+            } label: {
+                Image(systemName: "gearshape.fill")
             }
         }
         

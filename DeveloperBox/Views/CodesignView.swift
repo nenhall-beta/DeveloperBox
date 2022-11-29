@@ -15,10 +15,6 @@ struct CodesignView: View {
     var body: some View {
         ZStack {
             VStack {
-                Text("App 签名")
-                    .font(.largeTitle)
-                    .bold()
-                
                 Picker("选择签名证书", selection: $appState.identity) {
                     ForEach(appState.findIdentity(), id: \.self) { title in
                         Text(title).tag(title)
@@ -32,12 +28,19 @@ struct CodesignView: View {
                     TextField("输入渠道号，多个渠道号以,分隔", text: $appState.channelIDs)
                         .multilineTextAlignment(.leading)
                         .cornerRadius(8)
-                        .padding(.bottom, 20)
+                }
+                HStack() {
                     Toggle(isOn: $appState.needMakeDMG) {
-                        Text("分别生成 DMG")
+                        Text("生成 DMG")
                             .bold()
                     }
+                    Toggle(isOn: $appState.needNotarizate) {
+                        Text("同步公证")
+                            .bold()
+                    }
+                    Spacer()
                 }
+                .padding(.bottom, 20)
                 
                 HStack {
                     TextField("请选择一个 app 或者 dmg 格式文件", text: $appState.inputPath)
@@ -86,6 +89,6 @@ struct CodesignView_Previews: PreviewProvider {
 
     static var previews: some View {
         CodesignView()
-            .environmentObject(AppState())
+            .environmentObject(AppState.shared)
     }
 }

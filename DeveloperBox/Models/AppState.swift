@@ -11,6 +11,8 @@ import SwiftUI
 
 class AppState: ObservableObject {
     
+    static let shared = AppState()
+
     private var ableRun: Bool = true
     private var loginfo: [String: String] = [:]
     @AppStorage("inputPath") private var p_inputPath = ""
@@ -26,11 +28,6 @@ class AppState: ObservableObject {
         }
     }
     @AppStorage("outputPath") private var p_outputPath: String = ""
-    @Published var outputPath: String = "" {
-        didSet {
-            p_outputPath = outputPath
-        }
-    }
     @AppStorage("channelIDs") private var p_channelIDs: String = ""
     @Published var channelIDs: String = "" {
         didSet {
@@ -65,6 +62,7 @@ class AppState: ObservableObject {
         }
     }
     @Published var needMakeDMG: Bool = false
+    @Published var needNotarizate: Bool = false
     @Published var notaryCode = ""
     @Published var notrayFilePath = ""
     @AppStorage("appleID") var appleID = ""
@@ -72,15 +70,40 @@ class AppState: ObservableObject {
     @AppStorage("appPassword") var appSpecialKey = ""
     @AppStorage("saveKey") var saveKey = false
     @AppStorage("webhook") var webhook = ""
-    
+    @AppStorage("webhook") var workDirectory: String = {
+        var decktop = NSSearchPathForDirectoriesInDomains(.desktopDirectory, .userDomainMask, true).first ?? NSHomeDirectory() + "/\(NSUserName())/Desktop"
+        decktop.append("/DeveloperBox")
+        return decktop
+    }()
+
     let queue = DispatchQueue(label: "com.meitu.devbox.process")
     
-    init() {
+    private init() {
+        if !FileManager.default.fileExists(atPath: workDirectory) {
+            do {
+                try FileManager.default.createDirectory(atPath: workDirectory, withIntermediateDirectories: true)
+            } catch {
+                Log.error(error.localizedDescription)
+                updateLog(error.localizedDescription)
+            }
+        }
         inputPath = p_inputPath
-        outputPath = p_outputPath
         templatePath = p_templatePath
         channelIDs = p_channelIDs
         identity = p_identity
+    }
+    
+    func resetWorkDirectory() {
+        let decktop = NSSearchPathForDirectoriesInDomains(.desktopDirectory, .userDomainMask, true).first ?? NSHomeDirectory() + "/\(NSUserName())/Desktop"
+        workDirectory = decktop + "/DeveloperBox"
+        if !FileManager.default.fileExists(atPath: workDirectory) {
+            do {
+                try FileManager.default.createDirectory(atPath: workDirectory, withIntermediateDirectories: true)
+            } catch {
+                Log.error(error.localizedDescription)
+                updateLog(error.localizedDescription)
+            }
+        }
     }
 
     func run(item: NavigationItem) {
@@ -127,8 +150,8 @@ class AppState: ObservableObject {
             for item in chennels {
                 Codesign.run(appPath: tempPath, identity: self.identity, updateKeyValues: ["chennel": item]) { info, error, exited, result in
                     DispatchQueue.main.async {
-                        if self.needMakeDMG, let newPath = (result as? String) {
-                            self.runCreateDMG(at: newPath)
+                        if self.needMakeDMG, let _ = (result as? String) {
+                            self.runCreateDMG(at: self.workDirectory)
                         }
                         self.updateLog((info ?? error) ?? "")
                         self.ableRun = false
@@ -143,7 +166,7 @@ class AppState: ObservableObject {
     func runCreateDMG(at inputPath: String) {
         queue.async { [weak self] in
             guard let self = self else { return }
-            MakeDMG.run(appPath: inputPath, outputPath: self.outputPath, templateDir: self.templatePath) { info, error, exited, result in
+            MakeDMG.run(appPath: inputPath, outputPath: self.workDirectory, templateDir: self.templatePath) { info, error, exited, result in
                 DispatchQueue.main.async {
                     self.updateLog((info ?? error) ?? "")
                     self.ableRun = false

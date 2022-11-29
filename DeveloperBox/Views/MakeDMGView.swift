@@ -14,10 +14,6 @@ struct MakeDMGView: View {
     var body: some View {
         ZStack {
             VStack {
-                Text("制作 DMG 镜像")
-                    .font(.largeTitle)
-                    .bold()
-                
                 HStack {
                     TextField("请选择一个 app 格式文件", text: $appState.inputPath)
                         .multilineTextAlignment(.leading)
@@ -31,7 +27,7 @@ struct MakeDMGView: View {
                             .bold()
                     }
                 }
-                .padding(.bottom, 20)
+                .padding([.top, .bottom], 20)
                 
                 HStack {
                     TextField("请选择DMG模版文件路径", text: $appState.templatePath)
@@ -49,17 +45,15 @@ struct MakeDMGView: View {
                 .padding(.bottom, 20)
                 
                 HStack {
-                    TextField("请选择一个导出保存路径", text: $appState.outputPath)
+                    Text("导出路径（可在设置中更改）:")
                         .multilineTextAlignment(.leading)
                         .cornerRadius(8)
-                    Button {
-                        if let url = Panel.showSave(directoryPath: NSHomeDirectory()) {
-                            appState.outputPath = url.path
-                        }
-                    } label: {
-                        Text("输出路径")
-                            .bold()
-                    }
+                        .padding(5)
+                    Text(appState.workDirectory)
+                        .multilineTextAlignment(.leading)
+                        .cornerRadius(8)
+                    
+                    Spacer()
                 }
                 .padding(.bottom, 20)
                 
@@ -90,6 +84,6 @@ struct MakeDMGView_Previews: PreviewProvider {
 
     static var previews: some View {
         MakeDMGView()
-            .environmentObject(AppState())
+            .environmentObject(AppState.shared)
     }
 }

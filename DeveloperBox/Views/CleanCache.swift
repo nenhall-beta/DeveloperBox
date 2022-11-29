@@ -14,9 +14,6 @@ struct CleanCache: View {
     var body: some View {
         ZStack {
             VStack {
-                Text("缓存清理")
-                    .font(.largeTitle)
-                    .bold()
                 HStack {
                     TextField("请选择一个要清理的 app ", text: $appState.inputPath)
                         .multilineTextAlignment(.leading)
@@ -64,6 +61,6 @@ struct CleanCache_Previews: PreviewProvider {
 
     static var previews: some View {
         CleanCache()
-            .environmentObject(AppState())
+            .environmentObject(AppState.shared)
     }
 }

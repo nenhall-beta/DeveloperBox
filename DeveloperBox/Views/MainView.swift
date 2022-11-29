@@ -9,15 +9,23 @@ import SwiftUI
 
 struct MainView: View {
     @SceneStorage("searchText") var searchText = ""
-    @StateObject var appState = AppState()
+    @StateObject var appState = AppState.shared
+    @State var showSettingView = false
 
     var body: some View {
-        NavigationView {
-            SidebarView()
-                .environmentObject(appState)
-        }
-        .toolbar {
-            Toolbar(processing: $appState.processing, clean: $appState.cleanLog)
+        ZStack {
+            Color(NSColor.windowBackgroundColor)
+            NavigationView {
+                SidebarView()
+                    .environmentObject(appState)
+            }
+            .toolbar {
+                Toolbar(processing: $appState.processing, clean: $appState.cleanLog, setting: $showSettingView)
+            }
+            .sheet(isPresented: $showSettingView) {
+                SettingView(setting: $showSettingView)
+                    .environmentObject(appState)
+            }
         }
     }
 }

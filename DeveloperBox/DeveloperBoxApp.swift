@@ -30,5 +30,9 @@ struct DeveloperBoxApp: App {
         .commands {
             Menus()
         }
+        Settings {
+            SettingView(setting: Binding.constant(false))
+                .environmentObject(AppState.shared)
+        }
     }
 }

@@ -9,8 +9,8 @@ import SwiftUI
 
 enum NavigationItem: String {
     case codesign
-    case makeDMG
     case notarizate
+    case makeDMG
     case resetApp
 }
 
@@ -34,18 +34,6 @@ struct SidebarView: View {
                     .padding(10)
                 }
                 
-                NavigationLink(tag: NavigationItem.makeDMG, selection: $appState.selection) {
-                    MakeDMGView()
-                        .environmentObject(appState)
-                } label: {
-                    HStack {
-                        Image(systemName: "opticaldiscdrive")
-                            .font(.title)
-                        Text(NavigationItem.makeDMG.rawValue)
-                    }
-                    .padding(10)
-                }
-                
                 NavigationLink(tag: NavigationItem.notarizate, selection: $appState.selection) {
                     NotaryView()
                         .environmentObject(appState)
@@ -54,6 +42,18 @@ struct SidebarView: View {
                         Image(systemName: "lock.shield")
                             .font(.title)
                         Text(NavigationItem.notarizate.rawValue)
+                    }
+                    .padding(10)
+                }
+                
+                NavigationLink(tag: NavigationItem.makeDMG, selection: $appState.selection) {
+                    MakeDMGView()
+                        .environmentObject(appState)
+                } label: {
+                    HStack {
+                        Image(systemName: "opticaldiscdrive")
+                            .font(.title)
+                        Text(NavigationItem.makeDMG.rawValue)
                     }
                     .padding(10)
                 }
